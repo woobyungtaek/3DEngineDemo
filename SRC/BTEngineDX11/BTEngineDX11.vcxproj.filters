@@ -1,0 +1,311 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Core">
+      <UniqueIdentifier>{b85ec3b0-4a92-478a-a104-6cbb2d634a7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ExternOut">
+      <UniqueIdentifier>{3c188d8e-4988-4dd6-bf05-1ff41d642abe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ExternIn">
+      <UniqueIdentifier>{eea56ec8-e850-44e5-b37c-06b008bf2fde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ExternIn\MS">
+      <UniqueIdentifier>{88ae4c0d-404c-4f8b-bafc-a67a60afed1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ExternIn\FrankLuna">
+      <UniqueIdentifier>{50fa0eb8-f52f-4356-a2b3-844c9d986334}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ExternIn\DXTK">
+      <UniqueIdentifier>{4fdd380c-1dd4-456a-8200-fc9e762e3b53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parser">
+      <UniqueIdentifier>{58fd6869-0dd5-4921-956f-b1d8b06fc790}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parser\Lexer">
+      <UniqueIdentifier>{82cd2599-2dfe-440f-9e35-6062b8ce7f8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component">
+      <UniqueIdentifier>{1e5f7ce6-6fdb-49e2-8ddb-c717e75b0b80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineObject">
+      <UniqueIdentifier>{f166e2eb-d8f4-4676-b898-429b75d027af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineObject\Camera">
+      <UniqueIdentifier>{6ef5d2bc-d6ca-4e87-b399-4a777a99ba6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineObject\Manager">
+      <UniqueIdentifier>{5f082e2a-ee43-4170-a697-ef8e4543fccb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\RenderObject">
+      <UniqueIdentifier>{56a3f176-a2c2-432b-a894-0d081b8269f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\RenderObject\Renderer">
+      <UniqueIdentifier>{a6f924ea-a3c6-4eba-a3b9-fcb716356118}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineObject\Scene">
+      <UniqueIdentifier>{418c64f7-af6f-4562-a496-1a3662034650}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DataStruct">
+      <UniqueIdentifier>{73256d1f-e5e6-43c3-b58a-512779f0cc90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EngineObject\Input">
+      <UniqueIdentifier>{988c5a1f-e2ae-441d-8198-6abb7395d227}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\GameObject">
+      <UniqueIdentifier>{f10d2ad2-e487-4fb1-b41b-c41d88c3ca6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Component\Animation">
+      <UniqueIdentifier>{3ff678e6-f3c0-487e-9a9c-35c2faad3380}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FX">
+      <UniqueIdentifier>{39b74656-c913-419b-a4ff-a0ee2d67b4b6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BTEngine.cpp">
+      <Filter>ExternOut</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>EngineObject\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="BTDefine.cpp">
+      <Filter>ExternOut</Filter>
+    </ClCompile>
+    <ClCompile Include="GameTimer.cpp">
+      <Filter>ExternOut</Filter>
+    </ClCompile>
+    <ClCompile Include="DXTKFont.cpp">
+      <Filter>ExternIn\DXTK</Filter>
+    </ClCompile>
+    <ClCompile Include="MathHelper.cpp">
+      <Filter>ExternIn\FrankLuna</Filter>
+    </ClCompile>
+    <ClCompile Include="Effects.cpp">
+      <Filter>ExternIn\FrankLuna</Filter>
+    </ClCompile>
+    <ClCompile Include="struct_and_const.cpp">
+      <Filter>ExternIn\FrankLuna</Filter>
+    </ClCompile>
+    <ClCompile Include="LightHelper.cpp">
+      <Filter>ExternIn\FrankLuna</Filter>
+    </ClCompile>
+    <ClCompile Include="DDSTextureLoader.cpp">
+      <Filter>ExternIn\MS</Filter>
+    </ClCompile>
+    <ClCompile Include="dxerr.cpp">
+      <Filter>ExternIn\MS</Filter>
+    </ClCompile>
+    <ClCompile Include="Lexer.cpp">
+      <Filter>Parser\Lexer</Filter>
+    </ClCompile>
+    <ClCompile Include="ASEFile.cpp">
+      <Filter>Parser\Lexer</Filter>
+    </ClCompile>
+    <ClCompile Include="ParsingDataDefine.cpp">
+      <Filter>Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="BTASEParser.cpp">
+      <Filter>Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineScene.cpp">
+      <Filter>EngineObject\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D11Render.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="BTGameEngine.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Component\RenderObject\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshRenderer.cpp">
+      <Filter>Component\RenderObject\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="HelperRenderer.cpp">
+      <Filter>Component\RenderObject\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="BTInput.cpp">
+      <Filter>EngineObject\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Component\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="BTBehaviour.cpp">
+      <Filter>Component\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Component\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>Component\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager.cpp">
+      <Filter>EngineObject\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Animator.cpp">
+      <Filter>Component\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryGenerator.cpp">
+      <Filter>ExternIn\FrankLuna</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelData.cpp">
+      <Filter>DataStruct</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelDataSet.cpp">
+      <Filter>DataStruct</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshData.cpp">
+      <Filter>DataStruct</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialProperties.cpp">
+      <Filter>DataStruct</Filter>
+    </ClCompile>
+    <ClCompile Include="BTMaterial.cpp">
+      <Filter>DataStruct</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteRenderer.cpp">
+      <Filter>Component\RenderObject\Renderer</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BTEngine.h">
+      <Filter>ExternOut</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>EngineObject\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="BTDefine.h">
+      <Filter>ExternOut</Filter>
+    </ClInclude>
+    <ClInclude Include="GameTimer.h">
+      <Filter>ExternOut</Filter>
+    </ClInclude>
+    <ClInclude Include="DXTKFont.h">
+      <Filter>ExternIn\DXTK</Filter>
+    </ClInclude>
+    <ClInclude Include="DX11Define.h">
+      <Filter>ExternIn\FrankLuna</Filter>
+    </ClInclude>
+    <ClInclude Include="MathHelper.h">
+      <Filter>ExternIn\FrankLuna</Filter>
+    </ClInclude>
+    <ClInclude Include="Effects.h">
+      <Filter>ExternIn\FrankLuna</Filter>
+    </ClInclude>
+    <ClInclude Include="struct_and_const.h">
+      <Filter>ExternIn\FrankLuna</Filter>
+    </ClInclude>
+    <ClInclude Include="LightHelper.h">
+      <Filter>ExternIn\FrankLuna</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSTextureLoader.h">
+      <Filter>ExternIn\MS</Filter>
+    </ClInclude>
+    <ClInclude Include="dxerr.h">
+      <Filter>ExternIn\MS</Filter>
+    </ClInclude>
+    <ClInclude Include="Lexer.h">
+      <Filter>Parser\Lexer</Filter>
+    </ClInclude>
+    <ClInclude Include="ASEFile.h">
+      <Filter>Parser\Lexer</Filter>
+    </ClInclude>
+    <ClInclude Include="ParsingDataDefine.h">
+      <Filter>Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="BTASEParser.h">
+      <Filter>Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineScene.h">
+      <Filter>EngineObject\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D11Render.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="BTGameEngine.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Component\RenderObject\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshRenderer.h">
+      <Filter>Component\RenderObject\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="HelperRenderer.h">
+      <Filter>Component\RenderObject\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="BTInput.h">
+      <Filter>EngineObject\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Component\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="BTBehaviour.h">
+      <Filter>Component\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Component\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Component\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager.h">
+      <Filter>EngineObject\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="BTEngineHeader.h">
+      <Filter>ExternOut</Filter>
+    </ClInclude>
+    <ClInclude Include="Animator.h">
+      <Filter>Component\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryGenerator.h">
+      <Filter>ExternIn\FrankLuna</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelData.h">
+      <Filter>DataStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelDataSet.h">
+      <Filter>DataStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshData.h">
+      <Filter>DataStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialProperties.h">
+      <Filter>DataStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="BTMaterial.h">
+      <Filter>DataStruct</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteRenderer.h">
+      <Filter>Component\RenderObject\Renderer</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\ToDoList.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\FX\Basic.fx">
+      <Filter>FX</Filter>
+    </FxCompile>
+    <FxCompile Include="..\FX\Normal.fx">
+      <Filter>FX</Filter>
+    </FxCompile>
+    <FxCompile Include="..\FX\Sky.fx">
+      <Filter>FX</Filter>
+    </FxCompile>
+    <FxCompile Include="..\FX\Skin.fx">
+      <Filter>FX</Filter>
+    </FxCompile>
+    <FxCompile Include="..\FX\Sprite2D.fx">
+      <Filter>FX</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>

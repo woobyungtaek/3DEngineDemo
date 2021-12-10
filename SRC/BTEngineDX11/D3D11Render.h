@@ -54,28 +54,28 @@ public:
 
 	HWND mhWnd;
 
-	ID3D11Device* mDevice = nullptr;
+	ID3D11Device*		 mDevice		= nullptr;
 	ID3D11DeviceContext* mDeviceContext = nullptr;
 
-	IDXGISwapChain* mSwapChain = nullptr;
+	IDXGISwapChain* mSwapChain			= nullptr;
 	bool			mEnable4xMsaa;
 	UINT			m4xMsaaQuality;
 
-	ID3D11Texture2D* mDepthStencilBuffer = nullptr;
-	ID3D11RenderTargetView* mRenderTargetView = nullptr;
-	ID3D11DepthStencilView* mDepthStencilView = nullptr;
+	ID3D11Texture2D*		mDepthStencilBuffer = nullptr;
+	ID3D11RenderTargetView* mRenderTargetView	= nullptr;
+	ID3D11DepthStencilView* mDepthStencilView	= nullptr;
 
-	D3D11_VIEWPORT			 mScreenViewport;
+	D3D11_VIEWPORT			mScreenViewport;
 
-	ID3D11InputLayout* mInputLayout;
+	ID3D11InputLayout*		mInputLayout	= nullptr;
 
-	ID3D11RasterizerState* mRasterState = nullptr;
+	ID3D11RasterizerState*	mRasterState	= nullptr;
 
-	ID3D11RasterizerState* mWireframeRS;
-	ID3D11RasterizerState* mSolidRS;
+	ID3D11RasterizerState*	mWireframeRS	= nullptr;
+	ID3D11RasterizerState*	mSolidRS		= nullptr;
 
-	ID3D11DepthStencilState* NormalDSS;
-	ID3D11DepthStencilState* mDepthStencilState = nullptr;
+	ID3D11DepthStencilState* NormalDSS					= nullptr;
+	ID3D11DepthStencilState* mDepthStencilState			= nullptr;
 	ID3D11DepthStencilState* mDepthDisabledStencilState = nullptr;
 
 	bool bTest;

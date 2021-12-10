@@ -1,3 +1,11 @@
+/*
+	디퍼드를 하기위한 단계
+	1. 포지션, 노말, 알베도 3개 우선으로하기
+	2. 렌더러가 완젼 하나로 뭉쳐져 있네..  현재상태 forward로 만들고 deferred 따로
+	3. 쉐이더도 한개로 뭉쳐서 만들자 일단. vs, ps가 하나로된 deferred 쉐이더 하나 만들기
+	4. 라이트 쉐이더도 따로 만들기 ( 마지막에 그리는 (빛연산) 쉐이더가 각각 필요 )
+*/
+
 #include "pch.h"
 
 D3D11Render::D3D11Render()
@@ -130,8 +138,7 @@ bool D3D11Render::Init(int sWidth, int sHeight, bool vsync, HWND hWnd, bool full
 		return false;
 	}
 
-	HR(mDevice->CheckMultisampleQualityLevels(
-		DXGI_FORMAT_R8G8B8A8_UNORM, 4, &m4xMsaaQuality));
+	HR(mDevice->CheckMultisampleQualityLevels( DXGI_FORMAT_R8G8B8A8_UNORM, 4, &m4xMsaaQuality));
 	assert(m4xMsaaQuality > 0);
 
 	ID3D11Texture2D* backBuffer = nullptr;

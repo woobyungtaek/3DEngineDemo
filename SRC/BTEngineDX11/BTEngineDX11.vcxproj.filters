@@ -61,6 +61,9 @@
     <Filter Include="FX">
       <UniqueIdentifier>{39b74656-c913-419b-a4ff-a0ee2d67b4b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="FX\Deferred">
+      <UniqueIdentifier>{4fd6c275-137b-4a44-9f85-b4c914e8bb1d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BTEngine.cpp">

@@ -19,10 +19,12 @@ D3D11Render::~D3D11Render()
 
 bool D3D11Render::Init(int sWidth, int sHeight, bool vsync, HWND hWnd, bool fullscreen, float sDepth, float sNear)
 {
+	// 핸들 윈도우
 	mhWnd = hWnd;
 
 	mbVSync = vsync;
 
+	// 화면 크기
 	mScreenWidth = sWidth;
 	mScreenHeight = sHeight;
 
@@ -102,7 +104,7 @@ bool D3D11Render::Init(int sWidth, int sHeight, bool vsync, HWND hWnd, bool full
 	factory->Release();
 	factory = 0;
 
-	//스왑체인
+	// 스왑체인 Desc 
 	DXGI_SWAP_CHAIN_DESC sd;
 	ZeroMemory(&sd, sizeof(sd));
 	sd.BufferCount = 1;
@@ -132,20 +134,28 @@ bool D3D11Render::Init(int sWidth, int sHeight, bool vsync, HWND hWnd, bool full
 
 	D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_11_0;
 
+	// 디바이스와 스왑체인 생성
 	if (FAILED(D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0,
 		&featureLevel, 1, D3D11_SDK_VERSION, &sd, &mSwapChain, &mDevice, NULL, &mDeviceContext)))
 	{
 		return false;
 	}
+	
+	// 이 시점에서 디바이스와 스왑체인이 생성 되어 있다.
+	// 이를 이용해 각종 랜더를 설정해줘야한다.
 
+	// ??
 	HR(mDevice->CheckMultisampleQualityLevels( DXGI_FORMAT_R8G8B8A8_UNORM, 4, &m4xMsaaQuality));
 	assert(m4xMsaaQuality > 0);
 
+	
+	// 스왑체인에서 백 버퍼를 하나 가져온다.
 	ID3D11Texture2D* backBuffer = nullptr;
 	if (FAILED(mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBuffer)))
 	{
 		return false;
 	}
+	// 랜더 타겟 뷰 생성
 	if (FAILED(mDevice->CreateRenderTargetView(backBuffer, NULL, &mRenderTargetView)))
 	{
 		return false;
@@ -154,7 +164,7 @@ bool D3D11Render::Init(int sWidth, int sHeight, bool vsync, HWND hWnd, bool full
 	backBuffer->Release();
 	backBuffer = 0;
 
-	//깊이 스텐실 버퍼
+	//깊이 스텐실 버퍼 Desc
 	D3D11_TEXTURE2D_DESC depthBufferDesc;
 	ZeroMemory(&depthBufferDesc, sizeof(depthBufferDesc));
 
@@ -170,12 +180,13 @@ bool D3D11Render::Init(int sWidth, int sHeight, bool vsync, HWND hWnd, bool full
 	depthBufferDesc.CPUAccessFlags = 0;
 	depthBufferDesc.MiscFlags = 0;
 
+	// 생성
 	if (FAILED(mDevice->CreateTexture2D(&depthBufferDesc, NULL, &mDepthStencilBuffer)))
 	{
 		return false;
 	}
 
-	//깊이 스텐실
+	//깊이 스텐실 Desc
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
 	ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
 
@@ -197,13 +208,15 @@ bool D3D11Render::Init(int sWidth, int sHeight, bool vsync, HWND hWnd, bool full
 	depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
-
+	// 생성
 	if (FAILED(mDevice->CreateDepthStencilState(&depthStencilDesc, &mDepthStencilState)))
 	{
 		return false;
 	}
-	mDeviceContext->OMSetDepthStencilState(mDepthStencilState, 1);
 
+
+
+	// 깊이 스텐실 뷰 Desc
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
 
@@ -211,12 +224,12 @@ bool D3D11Render::Init(int sWidth, int sHeight, bool vsync, HWND hWnd, bool full
 	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 
+	// 생성
 	if (FAILED(mDevice->CreateDepthStencilView(mDepthStencilBuffer, &depthStencilViewDesc, &mDepthStencilView)))
 	{
 		return false;
 	}
 
-	mDeviceContext->OMSetRenderTargets(1, &mRenderTargetView, mDepthStencilView);
 
 	//래스터 라이저
 	D3D11_RASTERIZER_DESC rasterDesc;
@@ -236,20 +249,16 @@ bool D3D11Render::Init(int sWidth, int sHeight, bool vsync, HWND hWnd, bool full
 		return false;
 	}
 
-	mDeviceContext->RSSetState(mRasterState);
 
 	// 뷰포트
-	D3D11_VIEWPORT vp;
-	vp.Width = (float)mScreenWidth;
-	vp.Height = (float)mScreenHeight;
-	vp.MinDepth = 0.0f;
-	vp.MaxDepth = 1.0f;
-	vp.TopLeftX = 0.0f;
-	vp.TopLeftY = 0.0f;
+	mScreenViewport.Width = (float)mScreenWidth;
+	mScreenViewport.Height = (float)mScreenHeight;
+	mScreenViewport.MinDepth = 0.0f;
+	mScreenViewport.MaxDepth = 1.0f;
+	mScreenViewport.TopLeftX = 0.0f;
+	mScreenViewport.TopLeftY = 0.0f;
 
-	mDeviceContext->RSSetViewports(1, &vp);
-
-	mSwapChain->SetFullscreenState(fullscreen, NULL);
+	mSwapChain->SetFullscreenState(fullscreen, nullptr);
 
 	mWorld = Matrix::Identity;
 	mView = Matrix::Identity;
@@ -267,21 +276,24 @@ bool D3D11Render::Init(int sWidth, int sHeight, bool vsync, HWND hWnd, bool full
 
 void D3D11Render::Release()
 {
-	if (mSwapChain) { mSwapChain->SetFullscreenState(false, NULL); }
-	if (mRasterState) { mRasterState->Release();		  mRasterState = 0; }
-	if (mDepthStencilView) { mDepthStencilView->Release();   mDepthStencilView = 0; }
-	if (mDepthStencilState) { mDepthStencilState->Release();  mDepthStencilState = 0; }
-	if (mDepthStencilBuffer) { mDepthStencilBuffer->Release(); mDepthStencilBuffer = 0; }
-	if (mRenderTargetView) { mRenderTargetView->Release();   mRenderTargetView = 0; }
-	if (mDeviceContext) { mDeviceContext->Release();	  mDeviceContext = 0; }
-	if (mDevice) { mDevice->Release();			  mDevice = 0; }
-	if (mSwapChain) { mSwapChain->Release();		  mSwapChain = 0; }
+	if (mSwapChain)			{ mSwapChain->SetFullscreenState(false, NULL); }
+	if (mRasterState)		{ mRasterState->Release();		  mRasterState = 0; }
+	if (mDepthStencilView)	{ mDepthStencilView->Release();   mDepthStencilView = 0; }
+	if (mDepthStencilState)	{ mDepthStencilState->Release();  mDepthStencilState = 0; }
+	if (mDepthStencilBuffer){ mDepthStencilBuffer->Release(); mDepthStencilBuffer = 0; }
+	if (mRenderTargetView)	{ mRenderTargetView->Release();   mRenderTargetView = 0; }
+	if (mDeviceContext)		{ mDeviceContext->Release();	  mDeviceContext = 0; }
+	if (mDevice)			{ mDevice->Release();			  mDevice = 0; }
+	if (mSwapChain)			{ mSwapChain->Release();		  mSwapChain = 0; }
 }
 
 void D3D11Render::BeginRender(float r, float g, float b, float a)
 {
-	// 바인딩 부분들을 다 비긴으로 빼
-	// 왜냐하면 패스마다 스테이트가 바뀌기 때문에
+	// 디바이스 컨텍스트에 바인드
+	mDeviceContext->OMSetDepthStencilState(mDepthStencilState, 1);
+	mDeviceContext->OMSetRenderTargets(1, &mRenderTargetView, mDepthStencilView); // 포워드, 디퍼드 각각 따로
+	mDeviceContext->RSSetState(mRasterState);
+	mDeviceContext->RSSetViewports(1, &mScreenViewport);
 
 	const float color[4] = { r,g,b,a };
 	mDeviceContext->ClearRenderTargetView(mRenderTargetView, color);
@@ -332,9 +344,6 @@ void D3D11Render::OnResize(int sWidth, int sHeight)
 	assert(mDevice);
 	assert(mSwapChain);
 
-	// Release the old views, as they hold references to the buffers we
-	// will be destroying.  Also release the old depth/stencil buffer.
-
 	ReleaseCOM(mRenderTargetView);
 	ReleaseCOM(mDepthStencilView);
 	ReleaseCOM(mDepthStencilBuffer);
@@ -342,16 +351,14 @@ void D3D11Render::OnResize(int sWidth, int sHeight)
 	mScreenWidth = sWidth;
 	mScreenHeight = sHeight;
 
-	// Resize the swap chain and recreate the render target view.
-
+	// 스왑 체인 리사이즈 및 랜더타겟 재 생성
 	HR(mSwapChain->ResizeBuffers(1, sWidth, sHeight, DXGI_FORMAT_R8G8B8A8_UNORM, 0));
 	ID3D11Texture2D* backBuffer = nullptr;
 	HR(mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer)));
 	HR(mDevice->CreateRenderTargetView(backBuffer, 0, &mRenderTargetView));
 	ReleaseCOM(backBuffer);
 
-	// Create the depth/stencil buffer and view.
-
+	// 깊이 스텐실 재생성
 	D3D11_TEXTURE2D_DESC depthStencilDesc;
 
 	depthStencilDesc.Width = sWidth;
@@ -381,24 +388,15 @@ void D3D11Render::OnResize(int sWidth, int sHeight)
 	HR(mDevice->CreateTexture2D(&depthStencilDesc, 0, &mDepthStencilBuffer));
 	HR(mDevice->CreateDepthStencilView(mDepthStencilBuffer, 0, &mDepthStencilView));
 
-
-	// Bind the render target view and depth/stencil view to the pipeline.
-	/// 렌더타겟뷰, 뎁스/스탠실뷰를 파이프라인에 바인딩한다.
-
-	mDeviceContext->OMSetRenderTargets(1, &mRenderTargetView, mDepthStencilView);
-
-
-	// Set the viewport transform.
 	/// 뷰포트 변환을 셋팅한다.
-
 	mScreenViewport.TopLeftX = 0;
 	mScreenViewport.TopLeftY = 0;
-	mScreenViewport.Width = static_cast<float>(sWidth);
-	mScreenViewport.Height = static_cast<float>(sHeight);
+	mScreenViewport.Width	 = static_cast<float>(sWidth);
+	mScreenViewport.Height	 = static_cast<float>(sHeight);
 	mScreenViewport.MinDepth = 0.0f;
 	mScreenViewport.MaxDepth = 1.0f;
 
-	mDeviceContext->RSSetViewports(1, &mScreenViewport);
+	// 바인딩은 랜더 시작부분에서 매번 해준다.
 }
 
 
@@ -447,6 +445,7 @@ ID3D11DepthStencilState* D3D11Render::GetDisableDS()
 {
 	return mDepthDisabledStencilState;
 }
+
 Vector2 D3D11Render::GetScreenSize()
 {
 	return Vector2(mScreenWidth, mScreenHeight);

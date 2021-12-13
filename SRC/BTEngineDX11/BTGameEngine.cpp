@@ -38,29 +38,38 @@ D3D11Render* BTGameEngine::GetRender()
 void BTGameEngine::EngineUpdate(float deltaTime)
 {
 	int enegineSceneCount = (int)mEnegineSceneVec.size();
-	// All Scene Update
+
+	// 씬 전체 업데이트
 	for (int index = 0; index < enegineSceneCount; ++index)
 	{
 		// Active 상태 확인
 		mEnegineSceneVec[index]->Update(deltaTime);
 	}
 
-	// All Scene Render
+	// 씬 전체 렌더링
 	mRender->BeginRender(0.05f,0.05f,0.05f,1.0f);
 
 	for (int index = 0; index < enegineSceneCount; ++index)
 	{
-		//기본 실행
+		// 기본 실행
 		mRender->BeginSceneRender();
 
 		// 씬 구성 요소들 Rendering
 		mEnegineSceneVec[index]->Render();
 
-		//기본 실행
+		// 기본 실행
 		mRender->EndSceneRender();
+
+		// 라이팅 씬별로 해서 결과물이 따로 저장되어 있어야함
+		// 디퍼드 적용시 EndRender(); 이후에 LightRender가 되어야함 
+		// 위에서 모든 결과가 적용되고 빛 연산후 마지막에 백버퍼에서 최종그리기?
 	}
 
+	// 씬별 결과물을 조합 하는... (어쩌자고 다 나눠놔서 난리가 났구만)
+	 
+	// 렌더링 끝 최종
 	mRender->EndRender();
+
 }
 
 void BTGameEngine::AddEngineScene(EngineScene* pEngineScene)

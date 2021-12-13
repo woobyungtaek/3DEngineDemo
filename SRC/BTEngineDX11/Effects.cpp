@@ -2,6 +2,8 @@
 // Effects.cpp by Frank Luna (C) 2011 All Rights Reserved.
 //***************************************************************************************
 
+// 디퍼드 적용을 위해 다음으로 봐야 할 곳
+
 #include "Effects.h"
 
 #pragma region Effect

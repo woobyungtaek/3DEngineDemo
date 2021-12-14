@@ -87,7 +87,6 @@ void EngineScene::Update(float deltaTime)
 
 void EngineScene::Render()
 {
-
 	// 렌더러 오브젝트 모두 그리기	
 	for (int index = 0; index < mRendererVec.size(); ++index)
 	{

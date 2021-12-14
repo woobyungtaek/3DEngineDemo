@@ -143,8 +143,6 @@ bool D3D11Render::Init(int sWidth, int sHeight, bool vsync, HWND hWnd, bool full
 	
 	// 이 시점에서 디바이스와 스왑체인이 생성 되어 있다.
 	// 이를 이용해 각종 랜더를 설정해줘야한다.
-
-	// ??
 	HR(mDevice->CheckMultisampleQualityLevels( DXGI_FORMAT_R8G8B8A8_UNORM, 4, &m4xMsaaQuality));
 	assert(m4xMsaaQuality > 0);
 
@@ -160,9 +158,43 @@ bool D3D11Render::Init(int sWidth, int sHeight, bool vsync, HWND hWnd, bool full
 	{
 		return false;
 	}
-
 	backBuffer->Release();
 	backBuffer = 0;
+
+	// 디퍼드용 랜더타겟마만들 texture 정보
+	D3D11_TEXTURE2D_DESC texDesc;
+	ZeroMemory(&texDesc, sizeof(texDesc));
+	texDesc.Width = mScreenWidth;
+	texDesc.Height = mScreenHeight;
+	texDesc.MipLevels = 1;
+	texDesc.ArraySize = 1;
+	texDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	texDesc.SampleDesc.Count = 1;
+	texDesc.SampleDesc.Quality = 0;
+	texDesc.Usage = D3D11_USAGE_DEFAULT;
+	texDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	texDesc.CPUAccessFlags = 0;
+	texDesc.MiscFlags = 0;
+
+	for (int cnt = 0; cnt < Deferred_Count; ++cnt)
+	{
+		ID3D11Texture2D* deferred_tex = nullptr;
+		if (FAILED(mDevice->CreateTexture2D(&texDesc, NULL, &deferred_tex)))
+		{
+			return false;
+		}
+		if (FAILED(mDevice->CreateRenderTargetView(deferred_tex, NULL, &mDeferredRenderTargetViewArr[cnt])))
+		{
+			return false;
+		}
+		if (FAILED(mDevice->CreateShaderResourceView(deferred_tex, NULL, &mDeferredShaderResourceViewArr[cnt])))
+		{
+			return false;
+		}
+
+		deferred_tex->Release();
+		deferred_tex = 0;
+	}
 
 	//깊이 스텐실 버퍼 Desc
 	D3D11_TEXTURE2D_DESC depthBufferDesc;
@@ -213,8 +245,6 @@ bool D3D11Render::Init(int sWidth, int sHeight, bool vsync, HWND hWnd, bool full
 	{
 		return false;
 	}
-
-
 
 	// 깊이 스텐실 뷰 Desc
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
@@ -282,6 +312,14 @@ void D3D11Render::Release()
 	if (mDepthStencilState)	{ mDepthStencilState->Release();  mDepthStencilState = 0; }
 	if (mDepthStencilBuffer){ mDepthStencilBuffer->Release(); mDepthStencilBuffer = 0; }
 	if (mRenderTargetView)	{ mRenderTargetView->Release();   mRenderTargetView = 0; }
+	for (int cnt = 0; cnt < Deferred_Count; ++cnt)
+	{
+		if (mDeferredRenderTargetViewArr[cnt])
+		{
+			mDeferredRenderTargetViewArr[cnt]->Release();
+			mDeferredRenderTargetViewArr[cnt] = 0;
+		}
+	}
 	if (mDeviceContext)		{ mDeviceContext->Release();	  mDeviceContext = 0; }
 	if (mDevice)			{ mDevice->Release();			  mDevice = 0; }
 	if (mSwapChain)			{ mSwapChain->Release();		  mSwapChain = 0; }
@@ -289,23 +327,40 @@ void D3D11Render::Release()
 
 void D3D11Render::BeginRender(float r, float g, float b, float a)
 {
+	const float color[4] = { r,g,b,a };
+
 	// 디바이스 컨텍스트에 바인드
 	mDeviceContext->OMSetDepthStencilState(mDepthStencilState, 1);
-	mDeviceContext->OMSetRenderTargets(1, &mRenderTargetView, mDepthStencilView);
+	mDeviceContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	
+	// 디퍼드용 랜더 타겟 바인드 및 바인드
+	mDeviceContext->OMSetRenderTargets(Deferred_Count, &mDeferredRenderTargetViewArr[0], mDepthStencilView);
+	for (int cnt = 0; cnt < Deferred_Count; ++cnt)
+	{
+		// 우선 3개만 Albedo, Normal, Position 
+		mDeviceContext->ClearRenderTargetView(mDeferredRenderTargetViewArr[cnt], color);
+	}
+
 	mDeviceContext->RSSetState(mRasterState);
 	mDeviceContext->RSSetViewports(1, &mScreenViewport);
-
-	const float color[4] = { r,g,b,a };
-	mDeviceContext->ClearRenderTargetView(mRenderTargetView, color);
-	mDeviceContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);	
 }
 
-// 라이트 패스를 타야한다.
-// >>
+void D3D11Render::DeferredLightRender()
+{	
+	// 이걸 해주는 시점이 ... Scene랜더러가 끝나고 나서가 되어야 한다
+	// 즉 Scene단위로 해줘야하고 그럼  랜더 타겟을 초기화 하는 부분도 아래로 내려와야겠네
+	float color[4] = { 0, 0, 0, 0 };
 
+	// Final 랜더 타겟 바인드
+	mDeviceContext->OMSetRenderTargets(1, &mRenderTargetView, mDepthStencilView);
+	mDeviceContext->ClearRenderTargetView(mRenderTargetView, color);
 
-// 포스트 프로세싱을 먼저해서 랜더타겟 늘리는것 해보고
-// 그 다음 디퍼드를 해보자
+	// 디퍼드 값 셋팅
+	Effects::DeferredLightFX->SetSRVByIndex(0, mDeferredShaderResourceViewArr[0]);
+	Effects::DeferredLightFX->SetSRVByIndex(1, mDeferredShaderResourceViewArr[1]);
+	Effects::DeferredLightFX->SetSRVByIndex(2, mDeferredShaderResourceViewArr[2]);
+
+}
 
 void D3D11Render::EndRender()
 {
@@ -338,6 +393,7 @@ void D3D11Render::EndSceneRender()
 	mDeviceContext->RSSetState(0);
 }
 
+
 void D3D11Render::OnResize(int sWidth, int sHeight)
 {
 	assert(mDeviceContext);
@@ -353,8 +409,10 @@ void D3D11Render::OnResize(int sWidth, int sHeight)
 
 	// 스왑 체인 리사이즈 및 랜더타겟 재 생성
 	HR(mSwapChain->ResizeBuffers(1, sWidth, sHeight, DXGI_FORMAT_R8G8B8A8_UNORM, 0));
+	
 	ID3D11Texture2D* backBuffer = nullptr;
 	HR(mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer)));
+	
 	HR(mDevice->CreateRenderTargetView(backBuffer, 0, &mRenderTargetView));
 	ReleaseCOM(backBuffer);
 

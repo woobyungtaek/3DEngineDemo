@@ -65,6 +65,7 @@ void BTGameEngine::EngineUpdate(float deltaTime)
 		// 위에서 모든 결과가 적용되고 빛 연산후 마지막에 백버퍼에서 최종그리기?
 	}
 
+	// mRender->Light를 하는부분이 필요
 	// 씬별 결과물을 조합 하는... (어쩌자고 다 나눠놔서 난리가 났구만)
 	 
 	// 렌더링 끝 최종

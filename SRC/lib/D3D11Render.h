@@ -62,7 +62,13 @@ public:
 	UINT			m4xMsaaQuality;
 
 	ID3D11Texture2D*		mDepthStencilBuffer = nullptr;
-	ID3D11RenderTargetView* mRenderTargetView	= nullptr;
+	ID3D11RenderTargetView* mRenderTargetView	= nullptr; // Final Render Target View
+	
+	// Deferred용 랜더타겟뷰 배열이 필요
+	// Albedo, Normal, Position 3개
+	static const int Deferred_Count = 3;
+	ID3D11RenderTargetView* mDeferredRenderTargetViewArr[Deferred_Count] = { nullptr, };
+
 	ID3D11DepthStencilView* mDepthStencilView	= nullptr;
 
 	D3D11_VIEWPORT			mScreenViewport;

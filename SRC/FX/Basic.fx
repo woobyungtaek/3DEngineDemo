@@ -140,15 +140,6 @@ Ps_Out PS_Deferred(VertexOut pin, uniform bool gUseTexure) : SV_Target
 	// Interpolating normal can unnormalize it, so normalize it.
     pin.NormalW = normalize(pin.NormalW);
 
-	// The toEye vector is used in lighting.
-    float3 toEye = gEyePosW - pin.PosW;
-
-	// Cache the distance to the eye from this surface point.
-    float distToEye = length(toEye);
-
-	// Normalize.
-    toEye /= distToEye;
-
 	// Default to multiplicative identity.
     float4 texColor = float4(1, 1, 1, 1);
     if (gUseTexure)
@@ -160,8 +151,8 @@ Ps_Out PS_Deferred(VertexOut pin, uniform bool gUseTexure) : SV_Target
 	// 랜더 타겟에 각각 정보 저장
     Ps_Out ps_out;
     ps_out.Albedo = texColor;
-    ps_out.Normal = pin.NormalW;
-    ps_out.Position = pin.PosW;
+    ps_out.Normal = float4(pin.NormalW , 1);
+    ps_out.Position = float4(pin.PosW, 1);
 
     return ps_out;
 }

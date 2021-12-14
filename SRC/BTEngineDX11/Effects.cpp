@@ -38,8 +38,8 @@ BasicEffect::BasicEffect(ID3D11Device* device, const std::wstring& filename)
 	LightTech = mFX->GetTechniqueByName("Light");
 	LightTexTech = mFX->GetTechniqueByName("LightTex");
 
-	LightTexTech = mFX->GetTechniqueByName("LightTex");
-	LightTexTech = mFX->GetTechniqueByName("LightTex");
+	DeferredTech = mFX->GetTechniqueByName("Deferred");
+	DeferredTexTech = mFX->GetTechniqueByName("DeferredTex");
 
 	mLightCount = mFX->GetVariableByName("gLightCount")->AsScalar();
 	DirLights = mFX->GetVariableByName("gDirLights");
@@ -57,6 +57,27 @@ BasicEffect::BasicEffect(ID3D11Device* device, const std::wstring& filename)
 
 BasicEffect::~BasicEffect()
 {
+}
+
+DeferredLightEffect::DeferredLightEffect(ID3D11Device* device, const std::wstring& filename)
+	: Effect(device, filename)
+{
+	LightTech = mFX->GetTechniqueByName("Light");
+
+	WorldViewProj = mFX->GetVariableByName("gWorldViewProj")->AsMatrix();
+	EyePosW = mFX->GetVariableByName("gEyePosW")->AsVector();
+	DirLights = mFX->GetVariableByName("gDirLights");
+
+	mLightCount = mFX->GetVariableByName("gLightCount")->AsScalar();
+
+	DeferredRTArr[0] = mFX->GetVariableByName("AlbedoTex")->AsShaderResource();
+	DeferredRTArr[1] = mFX->GetVariableByName("NormalTex")->AsShaderResource();
+	DeferredRTArr[2] = mFX->GetVariableByName("PositionTex")->AsShaderResource();
+}
+
+DeferredLightEffect::~DeferredLightEffect()
+{
+
 }
 
 SkyEffect::SkyEffect(ID3D11Device* device, const std::wstring& filename) : Effect(device, filename)
@@ -164,22 +185,23 @@ SpriteEffect::~SpriteEffect()
 
 #pragma region Effects
 
-BasicEffect*	Effects::BasicFX	= 0;
-ColorEffect*	Effects::ColorFX	= 0;
-NormalEffect*	Effects::NormalFX	= 0;
-SkyEffect*		Effects::SkyFX		= 0;
-SkinEffect*		Effects::SkinFX		= 0;
-SpriteEffect*	Effects::Sprite2DFX = 0;
+BasicEffect*			Effects::BasicFX	= 0;
+ColorEffect*			Effects::ColorFX	= 0;
+NormalEffect*			Effects::NormalFX	= 0;
+SkyEffect*				Effects::SkyFX		= 0;
+SkinEffect*				Effects::SkinFX		= 0;
+SpriteEffect*			Effects::Sprite2DFX = 0;
+DeferredLightEffect*	Effects::DeferredLightFX = 0;
 
 void Effects::InitAll(ID3D11Device* device)
 {
-	BasicFX		= new BasicEffect(device, L"../FX/Basic.cso");
-	ColorFX		= new ColorEffect(device, L"../FX/color.fxo");
-	NormalFX	= new NormalEffect(device, L"../FX/Normal.cso");
-	SkyFX		= new SkyEffect(device, L"../FX/Sky.cso");
-	SkinFX		= new SkinEffect(device, L"../FX/Skin.cso");
-	Sprite2DFX	= new SpriteEffect(device, L"../FX/Sprite2D.cso");
-
+	BasicFX			= new BasicEffect	(device, L"../FX/Basic.cso");
+	ColorFX			= new ColorEffect	(device, L"../FX/color.fxo");
+	NormalFX		= new NormalEffect	(device, L"../FX/Normal.cso");
+	SkyFX			= new SkyEffect		(device, L"../FX/Sky.cso");
+	SkinFX			= new SkinEffect	(device, L"../FX/Skin.cso");
+	Sprite2DFX		= new SpriteEffect	(device, L"../FX/Sprite2D.cso");
+	DeferredLightFX = new DeferredLightEffect(device, L"../FX/Light.cso");
 }
 
 void Effects::DestroyAll()

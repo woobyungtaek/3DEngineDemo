@@ -12,10 +12,7 @@ cbuffer cbPerFrame
 
 cbuffer cbPerObject
 {
-    float4x4 gWorld;
-    float4x4 gWorldInvTranspose;
     float4x4 gWorldViewProj;
-    float4x4 gTexTransform;
     Material gMaterial;
 };
 
@@ -62,11 +59,15 @@ VertexOut VS(VertexIn vin)
 }
 
 // Lighting PS
-float4 PS(VertexOut pin, uniform bool gUseTexure) : SV_Target
+float4 PS(VertexOut pin) : SV_Target
 {
-    
+    float3 position = PositionTex.Sample(samAnisotropic, pin.Tex).xyz;
+    float4 albedo = AlbedoTex.Sample(samAnisotropic, pin.Tex);
+    float3 normal = NormalTex.Sample(samAnisotropic, pin.Tex).xyz;
+
+    // Position 랜더 타겟으로부터 PosW를 얻어야함
 	// The toEye vector is used in lighting.
-    float3 toEye = gEyePosW - pin.PosW;
+    float3 toEye = gEyePosW - position;
 
 	// Cache the distance to the eye from this surface point.
     float distToEye = length(toEye);
@@ -74,8 +75,14 @@ float4 PS(VertexOut pin, uniform bool gUseTexure) : SV_Target
 	// Normalize.
     toEye /= distToEye;
     
-    
-    float4 litColor = texColor;
+    Material testMat;
+    testMat.Ambient  = float4(0.3f, 0.3f, 0.3f, 1.0f);
+    testMat.Diffuse  = float4(0.3f, 0.3f, 0.3f, 1.0f);
+    testMat.Specular = float4(0.3f, 0.3f, 0.3f, 16.0f);
+    testMat.Reflect  = float4(0.0f, 0.0f, 0.0f, 0.0f);
+
+    // Lighting.
+    float4 litColor = albedo;
     if (gLightCount > 0)
     {
 	    // Start with a sum of zero. 
@@ -88,38 +95,31 @@ float4 PS(VertexOut pin, uniform bool gUseTexure) : SV_Target
         for (int i = 0; i < gLightCount; ++i)
         {
             float4 A, D, S;
-            ComputeDirectionalLight(gMaterial, gDirLights[i], pin.NormalW, toEye, A, D, S);
+            ComputeDirectionalLight(testMat, gDirLights[i], normal, toEye, A, D, S);
+            //ComputeDirectionalLight(gMaterial, gDirLights[i], normal, toEye, A, D, S);
 
             ambient += A;
             diffuse += D;
             spec += S;
         }
 
-	// Modulate with late add.
-        litColor = texColor * (ambient + diffuse) + spec;
+	    // Modulate with late add.
+        litColor = albedo * (ambient + diffuse) + spec;
     }
 
-// Common to take alpha from diffuse material and texture.
-    litColor.a = gMaterial.Diffuse.a * texColor.a;
+    // Common to take alpha from diffuse material and texture.
+    litColor.a = testMat.Diffuse.a * albedo.a;
+    //litColor.a = gMaterial.Diffuse.a * texColor.a;
 	
     return litColor;
 }
+
 technique11 Light
 {
     pass P0
     {
         SetVertexShader(CompileShader(vs_5_0, VS()));
         SetGeometryShader(NULL);
-        SetPixelShader(CompileShader(ps_5_0, PS(false)));
-    }
-}
-
-technique11 LightTex
-{
-    pass P0
-    {
-        SetVertexShader(CompileShader(vs_5_0, VS()));
-        SetGeometryShader(NULL);
-        SetPixelShader(CompileShader(ps_5_0, PS(true)));
+        SetPixelShader(CompileShader(ps_5_0, PS()));
     }
 }

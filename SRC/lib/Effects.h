@@ -87,8 +87,10 @@ public:
 
 public:
 	ID3DX11EffectTechnique* LightTech;
-
 	ID3DX11EffectTechnique* LightTexTech;
+
+	ID3DX11EffectTechnique* DeferredTech;
+	ID3DX11EffectTechnique* DeferredTexTech;
 
 	ID3DX11EffectMatrixVariable* WorldViewProj;
 	ID3DX11EffectMatrixVariable* World;
@@ -138,7 +140,6 @@ public:
 
 public:
 	ID3DX11EffectTechnique* LightTech;
-
 	ID3DX11EffectTechnique* LightTexTech;
 
 	ID3DX11EffectMatrixVariable* WorldViewProj;

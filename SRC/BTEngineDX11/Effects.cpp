@@ -36,6 +36,9 @@ BasicEffect::BasicEffect(ID3D11Device* device, const std::wstring& filename)
 	LightTech = mFX->GetTechniqueByName("Light");
 	LightTexTech = mFX->GetTechniqueByName("LightTex");
 
+	LightTexTech = mFX->GetTechniqueByName("LightTex");
+	LightTexTech = mFX->GetTechniqueByName("LightTex");
+
 	mLightCount = mFX->GetVariableByName("gLightCount")->AsScalar();
 	DirLights = mFX->GetVariableByName("gDirLights");
 

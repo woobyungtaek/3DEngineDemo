@@ -291,7 +291,7 @@ void D3D11Render::BeginRender(float r, float g, float b, float a)
 {
 	// 디바이스 컨텍스트에 바인드
 	mDeviceContext->OMSetDepthStencilState(mDepthStencilState, 1);
-	mDeviceContext->OMSetRenderTargets(1, &mRenderTargetView, mDepthStencilView); // 포워드, 디퍼드 각각 따로
+	mDeviceContext->OMSetRenderTargets(1, &mRenderTargetView, mDepthStencilView);
 	mDeviceContext->RSSetState(mRasterState);
 	mDeviceContext->RSSetViewports(1, &mScreenViewport);
 

@@ -310,5 +310,8 @@
     <FxCompile Include="..\FX\Sprite2D.fx">
       <Filter>FX</Filter>
     </FxCompile>
+    <FxCompile Include="..\FX\Light.fx">
+      <Filter>FX\Deferred</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
